@@ -27,3 +27,44 @@ static void plansza() {
             }
         }
     }
+
+
+    static void plansza() {
+
+            grid[0][0] = "   ";
+            for (int i = 1; i < 11; i++) {
+                for (int j = 1; j < 11; j++) {
+                    grid[i][j] = "~ ";
+                }
+                grid[0][i] = String.valueOf(i) + " ";
+                grid[i][0] = " " + new String(Character.toChars(i + 64)) + " ";
+            }
+            int l = 0, a = 0;
+            //tu zaczac do dorobienia cos zeby dzialalo
+            String ship;
+
+            do {
+                for (int i = 0; i < 11; i++) {
+
+                    for (int j = 0; j < 11; j++) {
+                        ship = String.valueOf(i) + String.valueOf(j);
+                        if (statek[a].rysunek[l].equals(ship)) {
+                            System.out.print("O ");
+                            l++;
+
+                        } else {
+                            System.out.print(grid[i][j]);
+                        }
+                    }
+                    System.out.println();
+                    l = 0;
+
+                }
+
+                a++;
+
+            } while (a < 2);
+        }
+
+        errorCouse = "";
+                           for (int i = 0; i < 5; i++) statek[nrStatku].rysunek[i] = "~ ";

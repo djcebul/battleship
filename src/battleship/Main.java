@@ -16,11 +16,11 @@ public class Main {
         var scanner = new Scanner(System.in);
         System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells):");
         do {
-            error();
+            error(0);
             String x, y;
             x = scanner.next();
             y = scanner.next();
-            statek[0] = new Statek(5, x, y);
+            statek[0] = new Statek(5, x, y, "Aircraft Carrier");
             dodajStatek(0);
             rysujPlansze(1);
 
@@ -28,74 +28,71 @@ public class Main {
         while (error);
         System.out.println("Enter the coordinates of the Battleship (4 cells):");
         do {
-            error();
+            error(1);
             String x, y;
             x = scanner.next();
             y = scanner.next();
-            statek[1] = new Statek(4, x, y);
+            statek[1] = new Statek(4, x, y, "Battleship");
             dodajStatek(1);
             rysujPlansze(1);
         }
         while (error);
         System.out.println("Enter the coordinates of the Submarine (3 cells):");
         do {
-            error();
+            error(2);
             String x, y;
             x = scanner.next();
             y = scanner.next();
-            statek[2] = new Statek(3, x, y);
+            statek[2] = new Statek(3, x, y, "Submarine");
             dodajStatek(2);
             rysujPlansze(1);
         }
         while (error);
         System.out.println("Enter the coordinates of the Cruiser (3 cells)");
         do {
-            error();
+            error(3);
             String x, y;
             x = scanner.next();
             y = scanner.next();
-            statek[3] = new Statek(3, x, y);
+            statek[3] = new Statek(3, x, y, "Cruiser");
             dodajStatek(3);
             rysujPlansze(1);
         }
         while (error);
         System.out.println("Enter the coordinates of the Destroyer (2 cells):");
         do {
-            error();
+            error(4);
             String x, y;
             x = scanner.next();
             y = scanner.next();
-            statek[4] = new Statek(2, x, y);
+            statek[4] = new Statek(2, x, y, "Destroyer");
             dodajStatek(4);
             rysujPlansze(1);
         }
         while (error);
-
-
-        //System.out.println(Arrays.toString(cruiser.rysunek));
-       // if (!error)plansza();
-
-
-//        System.out.println(String.valueOf(cruiser.maszt1x) + String.valueOf(cruiser.maszt1y));
-//        System.out.println(String.valueOf(cruiser.maszt2x) + String.valueOf(cruiser.maszt2y));
-
-
-
-
-
     }
-    static void error() {
+
+    /**
+     * Obsluga bledow
+     */
+    static void error(int nrStatku) {
        if (error) {
            switch (errorCouse) {
                case "wrongLocation":
                    System.out.println("Error! Wrong ship location! Try again:");
                    error = false;
+                   break;
+               case "wrongLength":
+                   System.out.println("Error! Wrong length of the " + statek[nrStatku].nazwa + "! Try again:");
+                   error = false;
+                   break;
+
            }
        }
     }
 
     /**
-        Rysuje pusta plansze na starcie
+        Rysuje plansze
         @param rodzajPlanszy  0 - pierwsze rysowanie planszy, przy rozpoczeciu gry
                               1 - drukuje aktualny stan pola bitwy z tablicy grid
      */
@@ -129,24 +126,35 @@ public class Main {
         }
     }
 
+    /**
+     * Dodaje statek do tablicy grid
+     * @param nrStatku 0 - 5 masztowiec
+     *                 1 - 4 masztowiec
+     *                 2 - 3 masztowiec
+     *                 3 - 3 masztowiec
+     *                 4 - 2 masztowiec
+     */
+
 
     static void dodajStatek(int nrStatku) {
-        String ship;
-        int l = 0;
+        if (!error) {
+            String ship;
+            int l = 0;
 
-       do {
-           for (int i = 1; i < 11; i++) {
+            do {
+                for (int i = 1; i < 11; i++) {
 
-               for (int j = 1; j < 11; j++) {
-                   ship = String.valueOf(i) + String.valueOf(j);
+                    for (int j = 1; j < 11; j++) {
+                        ship = String.valueOf(i) + String.valueOf(j);
 
-                   if (statek[nrStatku].rysunek[l].equals(ship)) {
-                       grid[i][j] = "O ";
-                   }
-               }
-           }
-           l++;
-       } while (l < 5);
+                        if (statek[nrStatku].rysunek[l].equals(ship)) {
+                            grid[i][j] = "O ";
+                        }
+                    }
+                }
+                l++;
+            } while (l < 5);
+        }
     }
 }
 
