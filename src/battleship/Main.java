@@ -22,7 +22,7 @@ public class Main {
             y = scanner.next();
             statek[0] = new Statek(5, x, y, "Aircraft Carrier");
             dodajStatek(0);
-            rysujPlansze(1);
+            if (!error) rysujPlansze(1);
 
         }
         while (error);
@@ -34,7 +34,7 @@ public class Main {
             y = scanner.next();
             statek[1] = new Statek(4, x, y, "Battleship");
             dodajStatek(1);
-            rysujPlansze(1);
+            if (!error) rysujPlansze(1);
         }
         while (error);
         System.out.println("Enter the coordinates of the Submarine (3 cells):");
@@ -45,7 +45,7 @@ public class Main {
             y = scanner.next();
             statek[2] = new Statek(3, x, y, "Submarine");
             dodajStatek(2);
-            rysujPlansze(1);
+            if (!error) rysujPlansze(1);
         }
         while (error);
         System.out.println("Enter the coordinates of the Cruiser (3 cells)");
@@ -56,7 +56,7 @@ public class Main {
             y = scanner.next();
             statek[3] = new Statek(3, x, y, "Cruiser");
             dodajStatek(3);
-            rysujPlansze(1);
+            if (!error) rysujPlansze(1);
         }
         while (error);
         System.out.println("Enter the coordinates of the Destroyer (2 cells):");
@@ -67,7 +67,7 @@ public class Main {
             y = scanner.next();
             statek[4] = new Statek(2, x, y, "Destroyer");
             dodajStatek(4);
-            rysujPlansze(1);
+            if (!error) rysujPlansze(1);
         }
         while (error);
     }
@@ -84,6 +84,10 @@ public class Main {
                    break;
                case "wrongLength":
                    System.out.println("Error! Wrong length of the " + statek[nrStatku].nazwa + "! Try again:");
+                   error = false;
+                   break;
+               case "toClose":
+                   System.out.println("Error! You placed it too close to another one. Try again:");
                    error = false;
                    break;
 
@@ -140,20 +144,42 @@ public class Main {
         if (!error) {
             String ship;
             int l = 0;
+            int x1, x2, y1, y2;
+            x1 = statek[nrStatku].maszt1x == 1 ? statek[nrStatku].maszt1x : statek[nrStatku].maszt1x -1;
+            x2 = statek[nrStatku].maszt2x == 10 ? statek[nrStatku].maszt2x : statek[nrStatku].maszt2x + 1;
+            y1 = statek[nrStatku].maszt1y == 1 ? statek[nrStatku].maszt1y : statek[nrStatku].maszt1y - 1;
+            y2 = statek[nrStatku].maszt2y == 10 ? statek[nrStatku].maszt2y : statek[nrStatku].maszt2y + 1;
+//tu zaczac
+            if (statek[nrStatku].maszt1x > 1 && statek[nrStatku].maszt1x <10)  x1 = statek[nrStatku].maszt1x - 1;
 
-            do {
-                for (int i = 1; i < 11; i++) {
+            System.out.println(statek[nrStatku].maszt1x);
+            System.out.println(statek[nrStatku].maszt2x);
+            System.out.println(statek[nrStatku].maszt1y);
+            System.out.println(statek[nrStatku].maszt2y);
 
-                    for (int j = 1; j < 11; j++) {
-                        ship = String.valueOf(i) + String.valueOf(j);
-
-                        if (statek[nrStatku].rysunek[l].equals(ship)) {
-                            grid[i][j] = "O ";
-                        }
+            for (int j = y1; j <= y2; j++) {
+                for (int i = x1; i <= x2; i++) {
+                    if (grid[j][i].equals("O ")) {
+                        error = true;
+                        errorCouse = "toClose";
+                        break;
                     }
                 }
-                l++;
-            } while (l < 5);
+                if (error) break;
+            }
+            if (!error) {
+                do {
+                    for (int i = 1; i < 11; i++) {
+                        for (int j = 1; j < 11; j++) {
+                            ship = String.valueOf(i) + String.valueOf(j);
+                            if (statek[nrStatku].rysunek[l].equals(ship)) {
+                                grid[i][j] = "O ";
+                            }
+                        }
+                    }
+                    l++;
+                } while (l < 5);
+            }
         }
     }
 }
