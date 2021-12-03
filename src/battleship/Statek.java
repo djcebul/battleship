@@ -56,9 +56,9 @@ public class Statek {
 
         if (this.maszt1y - this.maszt2y == 0) {
             poziomo = true;
-            int l = (maszt1x < maszt2x) ? maszt1x : maszt2x;
+            int l = Math.min(maszt1x, maszt2x);
             for (int i = 0; i < this.maszty; i++) {
-                this.rysunek[i] = String.valueOf(this.maszt1y) + String.valueOf(l);
+                this.rysunek[i] = this.maszt1y + String.valueOf(l);
                 l++;
             }
 
@@ -69,7 +69,7 @@ public class Statek {
         }
         else {
             poziomo = false;
-            int l = (maszt1y < maszt2y) ? maszt1y : maszt2y;
+            int l = Math.min(maszt1y, maszt2y);
             for (int i = 0; i < this.maszty; i++) {
                 this.rysunek[i] = String.valueOf(l) + String.valueOf(this.maszt1x);
                 l++;

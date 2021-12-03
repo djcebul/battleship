@@ -145,17 +145,13 @@ public class Main {
             String ship;
             int l = 0;
             int x1, x2, y1, y2;
-            x1 = statek[nrStatku].maszt1x == 1 ? statek[nrStatku].maszt1x : statek[nrStatku].maszt1x -1;
-            x2 = statek[nrStatku].maszt2x == 10 ? statek[nrStatku].maszt2x : statek[nrStatku].maszt2x + 1;
-            y1 = statek[nrStatku].maszt1y == 1 ? statek[nrStatku].maszt1y : statek[nrStatku].maszt1y - 1;
-            y2 = statek[nrStatku].maszt2y == 10 ? statek[nrStatku].maszt2y : statek[nrStatku].maszt2y + 1;
-//tu zaczac
-            if (statek[nrStatku].maszt1x > 1 && statek[nrStatku].maszt1x <10)  x1 = statek[nrStatku].maszt1x - 1;
 
-            System.out.println(statek[nrStatku].maszt1x);
-            System.out.println(statek[nrStatku].maszt2x);
-            System.out.println(statek[nrStatku].maszt1y);
-            System.out.println(statek[nrStatku].maszt2y);
+            x1 = statek[nrStatku].maszt1x == 1 || statek[nrStatku].maszt2x == 1 ? statek[nrStatku].maszt1x : Math.min(statek[nrStatku].maszt1x, statek[nrStatku].maszt2x) -1;
+            x2 = statek[nrStatku].maszt2x == 10 || statek[nrStatku].maszt1x == 10 ? statek[nrStatku].maszt2x : Math.max(statek[nrStatku].maszt1x, statek[nrStatku].maszt2x) + 1;
+            y1 = statek[nrStatku].maszt1y == 1 || statek[nrStatku].maszt2y == 1 ? statek[nrStatku].maszt1y : Math.min(statek[nrStatku].maszt1y, statek[nrStatku].maszt2y) - 1;
+            y2 = statek[nrStatku].maszt2y == 10 || statek[nrStatku].maszt1y == 10 ? statek[nrStatku].maszt2y : Math.max(statek[nrStatku].maszt1y, statek[nrStatku].maszt2y) + 1;
+
+            System.out.println(x1 +", " + x2 + ", " + y1 + ", " + y2);
 
             for (int j = y1; j <= y2; j++) {
                 for (int i = x1; i <= x2; i++) {
