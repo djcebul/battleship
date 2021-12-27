@@ -1,0 +1,335 @@
+A1 A5 C1 C4 E1 E3 G1 G3 I1 I2
+A10 A6 C10 C7 E10 E8 G10 G8 I10 I9
+A1 A2 A3 A4 A5 C1 C2 C3 C4 E1 E2 E3 G1 G2 G3 I1 I2
+A6 A7 A8 A9 A10 C7 C8 C9 C10 E8 E9 E10 G8 G9 G10 I9 I10
+
+
+Check if the cells around the hit mark is occupied, if yes then you just hit the ship. If not then you sank the ship. If the whole field has no occupied cell after the hit then congratulations.
+
+for Enter press : 
+  public static void promptEnterKey() {
+        System.out.println("Press Enter and pass the move to another player");
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+package battleship;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+import static battleship.Statek.error;
+import static battleship.Statek.errorCouse;
+
+public class Main {
+    static String[][] grid = new String[11][11];
+    static String[][] gridFog = new String[11][11];
+
+    static Statek[] statek = new Statek[5];
+    static int a,b;
+
+    public static void main(String[] args) {
+        rysujPlansze(0);
+        var scanner = new Scanner(System.in);
+        String shot;
+        System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells):");
+        do {
+            error(0);
+            String x, y;
+            x = scanner.next();
+            y = scanner.next();
+            statek[0] = new Statek(5, x, y, "Aircraft Carrier");
+            dodajStatek(0);
+            if (!error) rysujPlansze(1);
+
+        }
+        while (error);
+        System.out.println("Enter the coordinates of the Battleship (4 cells):");
+        do {
+            error(1);
+            String x, y;
+            x = scanner.next();
+            y = scanner.next();
+            statek[1] = new Statek(4, x, y, "Battleship");
+            dodajStatek(1);
+            if (!error) rysujPlansze(1);
+        }
+        while (error);
+        System.out.println("Enter the coordinates of the Submarine (3 cells):");
+        do {
+            error(2);
+            String x, y;
+            x = scanner.next();
+            y = scanner.next();
+            statek[2] = new Statek(3, x, y, "Submarine");
+            dodajStatek(2);
+            if (!error) rysujPlansze(1);
+        }
+        while (error);
+        System.out.println("Enter the coordinates of the Cruiser (3 cells)");
+        do {
+            error(3);
+            String x, y;
+            x = scanner.next();
+            y = scanner.next();
+            statek[3] = new Statek(3, x, y, "Cruiser");
+            dodajStatek(3);
+            if (!error) rysujPlansze(1);
+        }
+        while (error);
+        System.out.println("Enter the coordinates of the Destroyer (2 cells):");
+        do {
+            error(4);
+            String x, y;
+            x = scanner.next();
+            y = scanner.next();
+            statek[4] = new Statek(2, x, y, "Destroyer");
+            dodajStatek(4);
+            if (!error) rysujPlansze(1);
+        }
+        while (error);
+
+        System.out.println("The game starts!");
+        rysujPlansze(2);
+        System.out.println("Take a shot!");
+
+
+        while (true){
+            shot = scanner.next();
+           
+            a = (int) shot.charAt(0) - 64;
+            if (shot.length() < 3) {
+                a = (int) shot.charAt(0) - 64;
+                b = (int) shot.charAt(1) - 48;
+            } else {
+                String temp = String.valueOf(shot.charAt(1) + shot.charAt(2));
+                b = Integer.parseInt(temp) == 97 ? 10 : 11;
+                a = (int) shot.charAt(0) - 64;
+        }
+
+            if (a > 10 || b > 10 || a < 1 || b <1){
+                System.out.println("Error! You entered the wrong coordinates! Try again:");
+                continue;
+            }
+            if (grid[a][b].equals("~ ")){
+                grid[a][b] = "M ";
+                gridFog[a][b] = "M ";
+                rysujPlansze(3);
+                System.out.println("You missed!");
+                //rysujPlansze(1);
+                break;
+            }
+            else if (grid[a][b].equals("O ")) {
+                grid[a][b] = "X ";
+                gridFog[a][b] = "X ";
+                rysujPlansze(3);
+                System.out.println("You hit a ship!");
+                //rysujPlansze(1);
+                break;
+            }
+
+
+        }
+    }
+    
+    static void shot() {
+        if (grid[a][b].equals("~ ")){
+            grid[a][b] = "M ";
+            gridFog[a][b] = "M ";
+            rysujPlansze(3);
+            System.out.println("You missed!");
+            //rysujPlansze(1);
+            
+        }
+        else if (grid[a][b].equals("O ")) {
+            grid[a][b] = "X ";
+            gridFog[a][b] = "X ";
+            rysujPlansze(3);
+            System.out.println("You hit a ship!");
+            //rysujPlansze(1);
+           
+        }
+    }
+
+    /**
+     * Obsluga bledow
+     */
+    static void error(int nrStatku) {
+        if (error) {
+            switch (errorCouse) {
+                case "wrongLocation":
+                    System.out.println("Error! Wrong ship location! Try again:");
+                    error = false;
+                    break;
+                case "wrongLength":
+                    System.out.println("Error! Wrong length of the " + statek[nrStatku].nazwa + "! Try again:");
+                    error = false;
+                    break;
+                case "toClose":
+                    System.out.println("Error! You placed it too close to another one. Try again:");
+                    error = false;
+                    break;
+
+            }
+        }
+    }
+
+    /**
+     Rysuje plansze
+     @param rodzajPlanszy  0 - pierwsze rysowanie planszy, przy rozpoczeciu gry
+     1 - drukuje aktualny stan pola bitwy z tablicy grid
+     2 - rysuje plansze zawsze pusta
+     3 - rysuje plansze wraz ze strzalami gracza
+     */
+    static void rysujPlansze(int rodzajPlanszy) {
+        if (rodzajPlanszy == 0) {
+
+
+            grid[0][0] = "   ";
+            for (int i = 1; i < 11; i++) {
+                for (int j = 1; j < 11; j++) {
+                    grid[i][j] = "~ ";
+                }
+                grid[0][i] = String.valueOf(i) + " ";
+                grid[i][0] = " " + new String(Character.toChars(i + 64)) + " ";
+            }
+            for (int i = 0; i < 11; i++) {
+                for (int j = 0; j < 11; j++) {
+                    System.out.print(grid[i][j]);
+                }
+                System.out.println();
+            }
+        }
+        if (rodzajPlanszy == 1 && !error) {
+
+            for (int i = 0; i < 11; i++) {
+                for (int j = 0; j < 11; j++) {
+                    System.out.print(grid[i][j]);
+                }
+                System.out.println();
+            }
+        }
+        if (rodzajPlanszy == 2){
+            gridFog[0][0] = "   ";
+            for (int i = 1; i < 11; i++) {
+                for (int j = 1; j < 11; j++) {
+                    gridFog[i][j] = "~ ";
+                }
+                gridFog[0][i] = String.valueOf(i) + " ";
+                gridFog[i][0] = " " + new String(Character.toChars(i + 64)) + " ";
+            }
+            for (int i = 0; i < 11; i++) {
+                for (int j = 0; j < 11; j++) {
+                    System.out.print(gridFog[i][j]);
+                }
+                System.out.println();
+            }
+        }
+        if (rodzajPlanszy == 3){
+            for (int i = 0; i < 11; i++) {
+                for (int j = 0; j < 11; j++) {
+                    System.out.print(gridFog[i][j]);
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    /**
+     * Dodaje statek do tablicy grid
+     * @param nrStatku 0 - 5 masztowiec
+     *                 1 - 4 masztowiec
+     *                 2 - 3 masztowiec
+     *                 3 - 3 masztowiec
+     *                 4 - 2 masztowiec
+     */
+
+
+    static void dodajStatek(int nrStatku) {
+        if (!error) {
+            String ship;
+            int l = 0;
+            int x1, x2, y1, y2;
+
+            x1 = statek[nrStatku].maszt1x == 1 || statek[nrStatku].maszt2x == 1 ? statek[nrStatku].maszt1x : Math.min(statek[nrStatku].maszt1x, statek[nrStatku].maszt2x) -1;
+            x2 = statek[nrStatku].maszt2x == 10 || statek[nrStatku].maszt1x == 10 ? statek[nrStatku].maszt2x : Math.max(statek[nrStatku].maszt1x, statek[nrStatku].maszt2x) + 1;
+            y1 = statek[nrStatku].maszt1y == 1 || statek[nrStatku].maszt2y == 1 ? statek[nrStatku].maszt1y : Math.min(statek[nrStatku].maszt1y, statek[nrStatku].maszt2y) - 1;
+            y2 = statek[nrStatku].maszt2y == 10 || statek[nrStatku].maszt1y == 10 ? statek[nrStatku].maszt2y : Math.max(statek[nrStatku].maszt1y, statek[nrStatku].maszt2y) + 1;
+
+           // System.out.println(x1 +", " + x2 + ", " + y1 + ", " + y2);
+
+            for (int j = y1; j <= y2; j++) {
+                for (int i = x1; i <= x2; i++) {
+                    if (grid[j][i].equals("O ")) {
+                        error = true;
+                        errorCouse = "toClose";
+                        break;
+                    }
+                }
+                if (error) break;
+            }
+
+
+            if (!error) {
+                do {
+                    for (int i = 1; i < 11; i++) {
+                        for (int j = 1; j < 11; j++) {
+                            ship = String.valueOf(i) + String.valueOf(j);
+                            if (statek[nrStatku].rysunek[l].equals(ship)) {
+                                grid[i][j] = "O ";
+                            }
+                        }
+                    }
+                    l++;
+                } while (l < 5);
+            }
+        }
+    }
+}
+
+
+
+
+if (grid[a][b].equals("~ ")) {
+                grid[a][b] = "M ";
+                gridFog[a][b] = "M ";
+                rysujPlansze(2);
+                System.out.println("---------------------");
+                rysujPlansze(1);
+                System.out.println("You missed!");
+            } else if (koniecGry) {
+                grid[a][b] = "X ";
+                gridFog[a][b] = "X ";
+                rysujPlansze(1);
+                endOfTheGame = true;
+                System.out.println("You sank the last ship. You won. Congratulations!");
+            } else if (grid[a][b].equals("O ") && shipAround) {
+                grid[a][b] = "X ";
+                gridFog[a][b] = "X ";
+                rysujPlansze(2);
+                System.out.println("---------------------");
+                rysujPlansze(1);
+                System.out.println("You hit a ship! Try again:");
+            } else if (grid[a][b].equals("O ") && !shipAround) {
+                grid[a][b] = "X ";
+                gridFog[a][b] = "X ";
+                rysujPlansze(2);
+                System.out.println("---------------------");
+                rysujPlansze(1);
+                System.out.println("You sank a ship! Specify a new target:");
+            } else {
+                rysujPlansze(1);
+            }
+            System.out.println("Press Enter and pass the move to another player");
+            try {
+                System.in.read();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            rysujPlansze(2);
+            System.out.println("---------------------");
+            rysujPlansze(5);
